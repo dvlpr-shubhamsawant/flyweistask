@@ -1,3 +1,4 @@
+import 'package:ecommerce_seller/controllers/auth_controller.dart';
 import 'package:ecommerce_seller/presentation/on_boarding_section/otp/otp_screen2.dart';
 import 'package:ecommerce_seller/presentation/widgets/button_widgets.dart';
 import 'package:ecommerce_seller/utilz/colors.dart';
@@ -8,7 +9,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class CreateAccountScreen extends StatelessWidget {
-  const CreateAccountScreen({super.key});
+  CreateAccountScreen({super.key});
+
+  TextEditingController nameField = TextEditingController();
+  TextEditingController mobileField = TextEditingController();
+  TextEditingController emailField = TextEditingController();
+  TextEditingController passwordField = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -48,14 +54,21 @@ class CreateAccountScreen extends StatelessWidget {
                         fontWeight: FontWeight.w600, fontSize: 30.px),
                   )),
               sizedBoxHeight50,
-              CreateAccountWidget(label: 'Name', hintText: 'Name'),
+              CreateAccountWidget(
+                  controller: nameField, label: 'Name', hintText: 'Name'),
               sizedBoxHeight30,
               CreateAccountWidget(
-                  label: 'Mobile Number', hintText: 'Mobile Number *'),
+                  controller: mobileField,
+                  label: 'Mobile Number',
+                  hintText: 'Mobile Number *'),
               sizedBoxHeight30,
-              CreateAccountWidget(label: 'Email', hintText: 'Email *'),
+              CreateAccountWidget(
+                  controller: emailField, label: 'Email', hintText: 'Email *'),
               sizedBoxHeight30,
-              CreateAccountWidget(label: 'Password', hintText: 'Password *'),
+              CreateAccountWidget(
+                  controller: passwordField,
+                  label: 'Password',
+                  hintText: 'Password *'),
               sizedBoxHeight30,
               Text(
                 'We will send you an SMS to verify your email & mobile number',
@@ -64,9 +77,16 @@ class CreateAccountScreen extends StatelessWidget {
               ),
               sizedBoxHeight40,
               GestureDetector(
-                onTap: () {
-                  Get.to(()=>OtpScreen2());
-                  
+                onTap: () async {
+                  Status status = await AuthController().registerUser(
+                      name: nameField.text,
+                      email: emailField.text,
+                      password: passwordField.text,
+                      mobile: mobileField.text);
+
+                  if (status == Status.success) {
+                    Get.to(() => OtpScreen2());
+                  }
                 },
                 child: ButtonWidget(
                   backgroundColor: buttonColor,
@@ -119,13 +139,17 @@ class CreateAccountScreen extends StatelessWidget {
 
 class CreateAccountWidget extends StatelessWidget {
   const CreateAccountWidget(
-      {super.key, required this.label, required this.hintText});
+      {super.key,
+      required this.label,
+      required this.hintText,
+      required this.controller});
   final String label;
   final String hintText;
+  final TextEditingController controller;
   @override
   Widget build(BuildContext context) {
     return TextField(
-    
+      controller: controller,
       decoration: InputDecoration(
           // label: Text('Mobile Number'),
           floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -146,7 +170,6 @@ class CreateAccountWidget extends StatelessWidget {
             color: grey.withOpacity(0.3),
           ),
           contentPadding: EdgeInsets.all(10)),
-
     );
   }
 }

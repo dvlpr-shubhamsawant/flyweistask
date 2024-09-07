@@ -1,3 +1,4 @@
+import 'package:ecommerce_seller/controllers/user_controller.dart';
 import 'package:ecommerce_seller/presentation/main_section/account/coupons/coupon_screen.dart';
 import 'package:ecommerce_seller/presentation/main_section/account/edit_profile_screen/edit_profile_screen.dart';
 import 'package:ecommerce_seller/presentation/main_section/account/more_option_screen/more_option_screen.dart';
@@ -82,25 +83,22 @@ class AccountScreen extends StatelessWidget {
                           itemBuilder: (context, index) {
                             return GestureDetector(
                               onTap: () {
-                                if (index==0) {
-                                  
-                                Get.to(()=>const WalletScreen());
-                                }else if(index==1){
-bottom.selectedIndex.value=2;
-                      bottom.bottomNavigationIndexSelecting(2, 'more');
+                                if (index == 0) {
+                                  Get.to(() => const WalletScreen());
+                                } else if (index == 1) {
+                                  bottom.selectedIndex.value = 2;
+                                  bottom.bottomNavigationIndexSelecting(
+                                      2, 'more');
 
-print(bottom.selectedIndex);
-                                }else if(index==2){
-                                  Get.to(()=>const WishListScreen());
-                                  
-                                 }else if(index==3){
-                                        Get.to(()=>const NotificationScreen());
-
-                                 }else if(index==5){
-                                                                    Get.to(()=>const ReturnScreen()); 
-
-                                 } else {
-                                  Get.to(()=>const MoreOptionScreen());
+                                  print(bottom.selectedIndex);
+                                } else if (index == 2) {
+                                  Get.to(() => const WishListScreen());
+                                } else if (index == 3) {
+                                  Get.to(() => const NotificationScreen());
+                                } else if (index == 5) {
+                                  Get.to(() => const ReturnScreen());
+                                } else {
+                                  Get.to(() => const MoreOptionScreen());
                                 }
                               },
                               child: Column(
@@ -119,7 +117,7 @@ print(bottom.selectedIndex);
                                           width: Adaptive.w(4),
                                           child: Image.asset(
                                             'assets/images/accounts${index + 1}.png',
-                                        // fit: BoxFit.fill,
+                                            // fit: BoxFit.fill,
                                             // height: Adaptive.h(4),
                                           ),
                                         )),
@@ -177,7 +175,7 @@ print(bottom.selectedIndex);
                       Spacer(),
                       GestureDetector(
                         onTap: () {
-                        Get.to(()=> EditProfileScreen());
+                          Get.to(() => EditProfileScreen());
                         },
                         child: Container(
                           padding: EdgeInsets.all(10),
@@ -199,7 +197,8 @@ print(bottom.selectedIndex);
                     title: Text('Shop Name',
                         style: GoogleFonts.poppins(
                             fontSize: 14.px, fontWeight: FontWeight.w500)),
-                    subtitle: Text('1234567890 | Rakesh',
+                    subtitle: Text(
+                        '${AppUser().mobileNumber} | ${AppUser().name}',
                         style: GoogleFonts.poppins(
                             fontSize: 12.px, fontWeight: FontWeight.w500)),
                   ),
@@ -213,7 +212,8 @@ print(bottom.selectedIndex);
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Remaining wallet amount: ₹10,000/ ₹15000',
+                        Text(
+                            'Remaining wallet amount: ₹${AppUser().wallet}/ ₹15000',
                             style: GoogleFonts.poppins(
                                 fontSize: 12.px, fontWeight: FontWeight.w500)),
                         // Spacer(),
@@ -288,7 +288,7 @@ print(bottom.selectedIndex);
                 ],
               ),
             ).onTap(() {
-              Get.to(()=>const CouponScreen());
+              Get.to(() => const CouponScreen());
             }),
           )
         ],
