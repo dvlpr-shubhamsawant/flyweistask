@@ -193,7 +193,13 @@ class AccountScreen extends StatelessWidget {
                     ],
                   ),
                   ListTile(
-                    leading: Image.asset('assets/images/Ellipse 59.png'),
+                    leading: AppUser().getProfileImage() == null
+                        ? Image.asset('assets/images/Ellipse 59.png')
+                        : CircleAvatar(
+                            backgroundImage: NetworkImage(
+                              AppUser().getProfileImage()!,
+                            ),
+                          ),
                     title: Text('Shop Name',
                         style: GoogleFonts.poppins(
                             fontSize: 14.px, fontWeight: FontWeight.w500)),

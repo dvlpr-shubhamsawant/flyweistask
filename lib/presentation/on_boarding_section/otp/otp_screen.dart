@@ -1,7 +1,9 @@
 import 'package:ecommerce_seller/controllers/auth_controller.dart';
+import 'package:ecommerce_seller/controllers/user_controller.dart';
 import 'package:ecommerce_seller/presentation/main_section/bottom_navigation/bottom_navigation_screen.dart';
 import 'package:ecommerce_seller/presentation/on_boarding_section/reset_password/update_password_screen.dart';
 import 'package:ecommerce_seller/presentation/widgets/button_widgets.dart';
+import 'package:ecommerce_seller/requests/auth_requests.dart';
 import 'package:ecommerce_seller/utility/snackbar.dart';
 import 'package:ecommerce_seller/utilz/colors.dart';
 import 'package:ecommerce_seller/utilz/sized_box.dart';
@@ -151,6 +153,7 @@ class OtpScreen extends StatelessWidget {
                       }
 
                       if (status == Status.success) {
+                        AppUser().getUserDetails();
                         if (isReset) {
                           Get.to(() => UpdatePassword());
                         } else {

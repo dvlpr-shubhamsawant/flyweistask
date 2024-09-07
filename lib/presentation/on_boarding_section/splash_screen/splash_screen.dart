@@ -56,6 +56,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(seconds: 3), () async {
       await ProductController().fetchAllProducts();
       CartController().fetchAllCartProducts();
+      CartController().getAllCoupons();
       AppUser().isLogin
           ? Get.to(() => BottomNavigation())
           : Get.to(() => WalkThroughScreen());

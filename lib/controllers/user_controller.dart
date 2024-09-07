@@ -32,6 +32,13 @@ class AppUser extends ChangeNotifier {
     box.clear();
   }
 
+  String? getProfileImage() {
+    if (userDetails!.data!.user!.dummyImage!.length != 0) {
+      return userDetails!.data!.user!.dummyImage![0]['img'];
+    }
+    return null;
+  }
+
   set setToken(token) {
     _token = token;
   }
@@ -42,7 +49,7 @@ class AppUser extends ChangeNotifier {
 
   init() async {
     await fetchToken();
-    AddresssController().getAddresses();
+    fetchDetails();
   }
 
   fetchToken() async {
@@ -53,7 +60,17 @@ class AppUser extends ChangeNotifier {
 
     if (token != null) {
       logger.d(token);
-      userDetails = await AuthApis().getUserProfile();
+      getUserDetails();
     }
+  }
+
+  fetchDetails() async {
+    getUserDetails();
+    AddresssController().getAddresses();
+  }
+
+  getUserDetails() async {
+    userDetails = await AuthApis().getUserProfile();
+    notifyListeners();
   }
 }

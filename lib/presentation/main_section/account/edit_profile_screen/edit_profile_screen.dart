@@ -24,7 +24,13 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   PageController controller = PageController();
 
+  String? profileImage;
   XFile? image;
+
+  initState() {
+    profileImage = AppUser().getProfileImage();
+    setState(() {});
+  }
 
   pickImage() async {
     XFile? pickedImage =
@@ -75,10 +81,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               Positioned(
                 bottom: Adaptive.h(4),
                 left: Adaptive.w(35) + 15,
-                child: AppUser().profileImg != null
+                child: profileImage != null
                     ? CircleAvatar(
                         radius: 50,
-                        backgroundImage: NetworkImage(AppUser().profileImg),
+                        backgroundImage: NetworkImage(profileImage!),
                       )
                     : image != null
                         ? CircleAvatar(

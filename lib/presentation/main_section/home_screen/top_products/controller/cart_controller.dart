@@ -15,7 +15,7 @@ class CartController extends ChangeNotifier {
   CartProductsDataModel? cartProducts;
   CouponsDataModel? coupons;
   QuantityUpdateDataModel? quantityUpdate;
-  bool iscouponApply = true;
+  bool iscouponApply = false;
   set updatecoupon(bool value) {
     iscouponApply = value;
     notifyListeners();

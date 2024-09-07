@@ -119,6 +119,7 @@ class AuthApis {
         logger.d(data);
         displaySnackbar(message: data['message']);
         storeToken(data['token']);
+        AppUser().init();
         return Status.success;
       }
     } catch (e) {
