@@ -1,6 +1,9 @@
+// import 'package:ecommerce_seller/models/products_data_model.dart';
+import 'package:ecommerce_seller/main.dart';
 import 'package:ecommerce_seller/presentation/main_section/home_screen/cart/cart_screen.dart';
 import 'package:ecommerce_seller/presentation/main_section/home_screen/top_products/product_screen/widgets/productdetails_widget.dart';
 import 'package:ecommerce_seller/presentation/main_section/home_screen/top_products/rating_and_review_screen/rating_And_review_screen.dart';
+import 'package:ecommerce_seller/requests/cart_requests.dart';
 import 'package:ecommerce_seller/utilz/colors.dart';
 import 'package:ecommerce_seller/utilz/sized_box.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +15,10 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
-  const ProductDetailsScreen({super.key});
+  ProductDetailsScreen({super.key, required this.product});
+
+  var product;
+  CartRequests cartRequests = CartRequests();
 
   @override
   Widget build(BuildContext context) {
@@ -42,45 +48,22 @@ class ProductDetailsScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     sizedBoxHeight20,
-                    Stack(
-                      children: [
-                        SizedBox(
-                            height: Adaptive.h(26),
-                            // color: black,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Image.asset('assets/images/details1.png'),
-                              ],
-                            )),
-                        Positioned(
-                          bottom: 0,
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                height: Adaptive.h(8),
-                                child: ListView.separated(
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  separatorBuilder: (context, index) =>
-                                      sizedBoxWidth05,
-                                  itemCount: 5,
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (context, index) {
-                                    return Image.asset(
-                                        'assets/images/details${index + 2}.png');
-                                  },
-                                ),
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
+                    SizedBox(
+                        height: Adaptive.h(26),
+                        // color: black,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Image.network(
+                              '${product.image[0].url}',
+                              scale: 0.55,
+                            ),
+                          ],
+                        )),
                     sizedBoxHeight20,
                     Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 15.sp, vertical: 10.sp),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 15.sp, vertical: 10.sp),
                       decoration: BoxDecoration(
                           border: Border.all(
                             color: Colors.black45,
@@ -108,7 +91,7 @@ class ProductDetailsScreen extends StatelessWidget {
                         ),
                         Spacer(),
                         Text(
-                          'Available color:4',
+                          'Available color: ${product.color.length}',
                           style: GoogleFonts.poppins(
                               fontSize: 15.px,
                               fontWeight: FontWeight.w400,
@@ -119,29 +102,33 @@ class ProductDetailsScreen extends StatelessWidget {
                     sizedBoxHeight20,
                     SizedBox(
                       height: Adaptive.h(10),
+                      width: double.infinity,
                       child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            return SizedBox(
-                                width: Adaptive.w(23),
-                                height: Adaptive.h(7),
-                                child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(12.sp),
-                                    child: Image.asset(
-                                      'assets/images/detailscolor${index + 1}.png',
-                                      fit: BoxFit.fill,
-                                    )));
-                          },
-                          separatorBuilder: (context, index) => sizedBoxWidth10,
-                          itemCount: 4),
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return SizedBox(
+                            width: Adaptive.w(23),
+                            height: Adaptive.h(7),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12.sp),
+                              child: Image.network(
+                                '${product.image[index].url}',
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) => sizedBoxWidth10,
+                        itemCount: product.image.length,
+                      ),
                     ),
                     sizedBoxHeight10,
                     Row(
                       children: [
                         Text(
-                          'Men Printed Shirt ',
+                          '${product.productName}',
                           style: GoogleFonts.poppins(
                             fontSize: 15.px,
                             fontWeight: FontWeight.w500,
@@ -176,7 +163,7 @@ class ProductDetailsScreen extends StatelessWidget {
                         ),
                         sizedBoxWidth10,
                         Text(
-                          '56890 ',
+                          '${product.rating}',
                           style: GoogleFonts.poppins(
                               fontSize: 11.px,
                               fontWeight: FontWeight.w400,
@@ -184,7 +171,7 @@ class ProductDetailsScreen extends StatelessWidget {
                         ),
                         sizedBoxWidth10,
                         Text(
-                          'ratings ',
+                          'ratings',
                           style: GoogleFonts.poppins(
                               fontSize: 11.px,
                               fontWeight: FontWeight.w400,
@@ -196,7 +183,7 @@ class ProductDetailsScreen extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          '₹ 3,699',
+                          '₹ ${product.discountPrice}',
                           style: TextStyle(
                               decoration: TextDecoration.lineThrough,
                               color: Colors.black26,
@@ -205,7 +192,7 @@ class ProductDetailsScreen extends StatelessWidget {
                         ),
                         sizedBoxWidth10,
                         Text(
-                          '₹ 949',
+                          '₹ ${product.originalPrice}',
                           style: TextStyle(
                               color: black,
                               fontSize: 17.px,
@@ -213,7 +200,7 @@ class ProductDetailsScreen extends StatelessWidget {
                         ),
                         sizedBoxWidth10,
                         Text(
-                          '74% off',
+                          '${product.discount}% off',
                           style: GoogleFonts.poppins(
                               fontWeight: FontWeight.w500,
                               fontSize: 16.px,
@@ -221,7 +208,7 @@ class ProductDetailsScreen extends StatelessWidget {
                         ),
                         Spacer(),
                         Text(
-                          'MOQ: 4 Pcs',
+                          'MOQ: ${product.stock} Pcs',
                           style: GoogleFonts.poppins(
                               fontWeight: FontWeight.w400, fontSize: 13.px),
                         )
@@ -246,7 +233,8 @@ class ProductDetailsScreen extends StatelessWidget {
                         Spacer(),
                         Container(
                           padding: EdgeInsets.symmetric(
-                              horizontal: Adaptive.w(2), vertical: Adaptive.h(1)),
+                              horizontal: Adaptive.w(2),
+                              vertical: Adaptive.h(1)),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12.sp),
                               border: Border.all(
@@ -270,7 +258,8 @@ class ProductDetailsScreen extends StatelessWidget {
                     sizedBoxHeight20,
                     containerFunctions('delivary2', '10 Days Return Policy'),
                     sizedBoxHeight20,
-                    containerFunctions('delivary3', 'Cash on Delivery Available'),
+                    containerFunctions(
+                        'delivary3', 'Cash on Delivery Available'),
                     sizedBoxHeight20,
                     Divider(
                       color: black,
@@ -399,7 +388,8 @@ class ProductDetailsScreen extends StatelessWidget {
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2, // Number of columns
-                                  crossAxisSpacing: 5, // Spacing between columns
+                                  crossAxisSpacing:
+                                      5, // Spacing between columns
                                   mainAxisSpacing: 9.0, // Spacing between rows
                                   childAspectRatio: 0.8),
                           itemCount: 2,
@@ -426,8 +416,7 @@ class ProductDetailsScreen extends StatelessWidget {
                         Spacer(),
                         GestureDetector(
                           onTap: () {
-                            Get.to(()=>const RatingReviewScreen());
-                            
+                            Get.to(() => const RatingReviewScreen());
                           },
                           child: Text('AllDetails',
                               style: GoogleFonts.poppins(
@@ -445,12 +434,16 @@ class ProductDetailsScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Expanded(flex: 1, child: _buildIndicatorAndText("Quality")),
                         Expanded(
-                            flex: 1, child: _buildIndicatorAndText("Strong space")),
-                        Expanded(flex: 1, child: _buildIndicatorAndText("Design ")),
+                            flex: 1, child: _buildIndicatorAndText("Quality")),
                         Expanded(
-                            flex: 1, child: _buildIndicatorAndText("Durability")),
+                            flex: 1,
+                            child: _buildIndicatorAndText("Strong space")),
+                        Expanded(
+                            flex: 1, child: _buildIndicatorAndText("Design ")),
+                        Expanded(
+                            flex: 1,
+                            child: _buildIndicatorAndText("Durability")),
                       ],
                     ),
                     sizedBoxHeight20,
@@ -488,71 +481,73 @@ class ProductDetailsScreen extends StatelessWidget {
                     sizedBoxHeight30,
                     SizedBox(
                       child: ListView.builder(
-                         shrinkWrap: true,
-                         physics: NeverScrollableScrollPhysics(),
-                        itemCount:3,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: product.reviews.length,
                         itemBuilder: (context, index) {
-                        return Column(
-                      children: [
-                        Row(
-                          children: [
-                            Text('Priya',
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text('${product.reviews[index].name}',
+                                      style: GoogleFonts.poppins(
+                                        // decoration: TextDecoration.lineThrough,
+                                        // decorationColor: Colors.grey,
+                                        color: black,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14.px,
+                                      )),
+                                  Spacer(),
+                                  Text('18-03-2024|10:00 AM',
+                                      style: GoogleFonts.poppins(
+                                        // decoration: TextDecoration.underline,
+                                        // decorationColor: buttonColor,
+                                        color: grey,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12.px,
+                                      ))
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  VxRating(
+                                    size: Adaptive.h(2),
+                                    count: product.reviews[index].rating,
+                                    selectionColor: buttonColor,
+                                    onRatingUpdate: (value) {},
+                                  ),
+                                  Spacer(),
+                                  Text('18-03-2024|10:00 AM',
+                                      style: GoogleFonts.poppins(
+                                        // decoration: TextDecoration.underline,
+                                        // decorationColor: buttonColor,
+                                        color: grey,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12.px,
+                                      ))
+                                ],
+                              ),
+                              Text(
+                                "${product.reviews[index].comment}",
                                 style: GoogleFonts.poppins(
-                                  // decoration: TextDecoration.lineThrough,
-                                  // decorationColor: Colors.grey,
-                                  color: black,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14.px,
-                                )),
-                            Spacer(),
-                            Text('18-03-2024|10:00 AM',
-                                style: GoogleFonts.poppins(
-                                  // decoration: TextDecoration.underline,
-                                  // decorationColor: buttonColor,
-                                  color: grey,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12.px,
-                                ))
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            VxRating(
-                              size: Adaptive.h(2),
-                              count: 5,
-                              selectionColor: buttonColor,
-                              onRatingUpdate: (value) {},
-                            ),
-                            Spacer(),
-                            Text('18-03-2024|10:00 AM',
-                                style: GoogleFonts.poppins(
-                                  // decoration: TextDecoration.underline,
-                                  // decorationColor: buttonColor,
-                                  color: grey,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12.px,
-                                ))
-                          ],
-                        ),
-                        Text(
-                          "is simply dummy text of the printing and type setting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,",
-                          style: GoogleFonts.poppins(
-                              fontSize: 13.px, fontWeight: FontWeight.w500),
-                        ),
-                        sizedBoxHeight20
-                      ],
-                    );
-                      },),
+                                    fontSize: 13.px,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              sizedBoxHeight20
+                            ],
+                          );
+                        },
+                      ),
                     )
-                    
                   ],
                 ),
               ),
             ),
             Positioned(
-              bottom: Adaptive.h(10),
-              right: Adaptive.w(3),
-              child: Image.asset('assets/images/detailsstack.png'))
+                bottom: Adaptive.h(10),
+                right: Adaptive.w(3),
+                child: Image.asset('assets/images/detailsstack.png'))
           ],
         ),
       ),
@@ -579,8 +574,14 @@ class ProductDetailsScreen extends StatelessWidget {
                     fontWeight: FontWeight.w600),
               ),
             ),
-          ).onTap(() {
-            Get.to(()=>const CartScreen());
+          ).onTap(() async {
+            Map<String, dynamic> productData = {
+              'productId': product.id,
+              'size': product.size[0],
+              'quantity': 2
+            };
+            await cartRequests.addToCart(productData);
+            Get.to(() => CartScreen());
           }),
           Container(
             height: Adaptive.h(6),

@@ -1,8 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:ecommerce_seller/presentation/main_section/home_screen/top_products/controller/cart_controller.dart';
 import 'package:ecommerce_seller/presentation/on_boarding_section/walk_through/walk_through.dart';
+import 'package:ecommerce_seller/requests/cart_requests.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../main_section/home_screen/top_products/controller/product_controller.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -46,7 +50,10 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   loginScreen() async {
-    await Future.delayed(const Duration(seconds: 3));
-    Get.to(() => WalkThroughScreen());
+    await Future.delayed(const Duration(seconds: 3), () async {
+      await ProductController().fetchAllProducts();
+      CartController().fetchAllCartProducts();
+      Get.to(() => WalkThroughScreen());
+    });
   }
 }
