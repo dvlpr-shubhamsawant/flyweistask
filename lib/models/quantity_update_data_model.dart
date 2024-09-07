@@ -1,6 +1,5 @@
-
 class QuantityUpdateDataModel {
-  int? status;
+  var status;
   String? message;
   Data? data;
 
@@ -16,7 +15,7 @@ class QuantityUpdateDataModel {
     final Map<String, dynamic> _data = <String, dynamic>{};
     _data["status"] = status;
     _data["message"] = message;
-    if(data != null) {
+    if (data != null) {
       _data["data"] = data?.toJson();
     }
     return _data;
@@ -29,18 +28,30 @@ class Data {
   List<Products>? products;
   dynamic coupon;
   bool? walletUsed;
-  int? shippingPrice;
-  double? totalPaidAmount;
+  var shippingPrice;
+  var totalPaidAmount;
   String? createdAt;
   String? updatedAt;
-  int? v;
+  var v;
 
-  Data({this.id, this.user, this.products, this.coupon, this.walletUsed, this.shippingPrice, this.totalPaidAmount, this.createdAt, this.updatedAt, this.v});
+  Data(
+      {this.id,
+      this.user,
+      this.products,
+      this.coupon,
+      this.walletUsed,
+      this.shippingPrice,
+      this.totalPaidAmount,
+      this.createdAt,
+      this.updatedAt,
+      this.v});
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json["_id"];
     user = json["user"];
-    products = json["products"] == null ? null : (json["products"] as List).map((e) => Products.fromJson(e)).toList();
+    products = json["products"] == null
+        ? null
+        : (json["products"] as List).map((e) => Products.fromJson(e)).toList();
     coupon = json["coupon"];
     walletUsed = json["walletUsed"];
     shippingPrice = json["shippingPrice"];
@@ -54,7 +65,7 @@ class Data {
     final Map<String, dynamic> _data = <String, dynamic>{};
     _data["_id"] = id;
     _data["user"] = user;
-    if(products != null) {
+    if (products != null) {
       _data["products"] = products?.map((e) => e.toJson()).toList();
     }
     _data["coupon"] = coupon;
@@ -72,12 +83,19 @@ class Products {
   String? product;
   String? vendorId;
   String? size;
-  int? quantity;
-  double? price;
-  double? totalAmount;
+  var quantity;
+  var price;
+  var totalAmount;
   String? id;
 
-  Products({this.product, this.vendorId, this.size, this.quantity, this.price, this.totalAmount, this.id});
+  Products(
+      {this.product,
+      this.vendorId,
+      this.size,
+      this.quantity,
+      this.price,
+      this.totalAmount,
+      this.id});
 
   Products.fromJson(Map<String, dynamic> json) {
     product = json["product"];

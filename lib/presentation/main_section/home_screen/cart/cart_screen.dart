@@ -57,10 +57,53 @@ class CartScreen extends StatelessWidget {
                           child: Image.asset('assets/images/appbar1.png')),
                       sizedBoxWidth30,
                       GestureDetector(
+                        onTap: () {
+                          showCustomBottomSheet(context);
+                        },
+                        child: Image.asset('assets/images/appbar2.png'),
+                      ),
+                      sizedBoxWidth30,
+                      Consumer<CartController>(
+                          builder: (context, controller, _) {
+                        return GestureDetector(
                           onTap: () {
-                            showCustomBottomSheet(context);
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("Confirm Deletion"),
+                                  content: Text(
+                                      "Are you sure you want to delete all items from the cart? This action cannot be undone."),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text("Cancel"),
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .pop(); // Close the dialog
+                                      },
+                                    ),
+                                    ElevatedButton(
+                                      child: Text("Delete All"),
+                                      onPressed: () async {
+                                        // Add your delete all cart items logic here
+                                        await controller
+                                            .deleteCartAllProducts();
+                                        Navigator.of(context)
+                                            .pop(); // Close the dialog
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors
+                                            .red, // Make the button color red for warning
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           },
-                          child: Image.asset('assets/images/appbar2.png')),
+                          child: Icon(Icons.delete),
+                        );
+                      }),
                       sizedBoxWidth30,
                       // Image.asset('assets/images/carbon_delivery.png'),
                       // sizedBoxWidth40,
@@ -114,6 +157,7 @@ class CartScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
@@ -181,6 +225,41 @@ class CartScreen extends StatelessWidget {
                       )
                     ],
                   ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Text("Available Coupons"),
+                  Consumer<CartController>(builder: (context, controller, _) {
+                    return controller.coupons?.data?.length == 0
+                        ? SizedBox()
+                        : GestureDetector(
+                            onTap: () async {
+                              controller.iscouponApply == true
+                                  ? await controller.removeCoupon()
+                                  : await controller.applyCoupon(
+                                      controller.coupons!.data![0].code!);
+                              controller.updatecoupon =
+                                  !controller.iscouponApply;
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                  color: controller.iscouponApply == true
+                                      ? Colors.green
+                                      : Colors.white,
+                                  border: Border.all(
+                                    color: controller.iscouponApply == true
+                                        ? Colors.green
+                                        : Colors.grey,
+                                  ),
+                                  borderRadius: BorderRadius.circular(12)),
+                              child: Text(
+                                "${controller.coupons!.data![0].code}",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                          );
+                  }),
                   Consumer<CartController>(
                     builder: (context, controller, _) {
                       return SizedBox(
@@ -227,8 +306,27 @@ class CartScreen extends StatelessWidget {
                                                           MainAxisAlignment
                                                               .spaceEvenly,
                                                       children: [
-                                                        Image.asset(
-                                                            'assets/images/cartdic.png'),
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            controller.updateQuantity(
+                                                                controller
+                                                                    .cartProducts!
+                                                                    .data!
+                                                                    .products![
+                                                                        index]
+                                                                    .product!
+                                                                    .id!,
+                                                                controller
+                                                                        .cartProducts!
+                                                                        .data!
+                                                                        .products![
+                                                                            index]
+                                                                        .quantity -
+                                                                    1);
+                                                          },
+                                                          child: Image.asset(
+                                                              'assets/images/cartdic.png'),
+                                                        ),
                                                         sizedBoxWidth20,
                                                         Text(
                                                           '${controller.cartProducts!.data!.products![index].quantity}',
@@ -241,8 +339,27 @@ class CartScreen extends StatelessWidget {
                                                                       14.px),
                                                         ),
                                                         sizedBoxWidth20,
-                                                        Image.asset(
-                                                            'assets/images/cartincr.png'),
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            controller.updateQuantity(
+                                                                controller
+                                                                    .cartProducts!
+                                                                    .data!
+                                                                    .products![
+                                                                        index]
+                                                                    .product!
+                                                                    .id!,
+                                                                controller
+                                                                        .cartProducts!
+                                                                        .data!
+                                                                        .products![
+                                                                            index]
+                                                                        .quantity +
+                                                                    1);
+                                                          },
+                                                          child: Image.asset(
+                                                              'assets/images/cartincr.png'),
+                                                        ),
                                                       ],
                                                     )
                                                   ],
@@ -325,11 +442,23 @@ class CartScreen extends StatelessWidget {
                                                                       ),
                                                                       FilledButton(
                                                                         onPressed:
-                                                                            () {
-                                                                          controller.updateProduct(
-                                                                              controller.cartProducts!.data!.id!,
+                                                                            () async {
+                                                                          if (controller
+                                                                              .cartProducts!
+                                                                              .data!
+                                                                              .products![index]
+                                                                              .product!
+                                                                              .id!
+                                                                              .isNotEmpty) {
+                                                                            await controller.updateProduct(
+                                                                              controller.cartProducts!.data!.products![index].product!.id!,
                                                                               int.parse(quantityController.text),
-                                                                              sizeController.text);
+                                                                              sizeController.text,
+                                                                            );
+                                                                          } else {
+                                                                            VxToast.show(context,
+                                                                                msg: "Id Not Found");
+                                                                          }
                                                                           Get.back();
                                                                         },
                                                                         child: Text(
@@ -372,7 +501,7 @@ class CartScreen extends StatelessWidget {
                                                                             .w400,
                                                                     fontSize:
                                                                         12.px),
-                                                          )
+                                                          ),
                                                         ],
                                                       ),
                                                     ),
@@ -482,25 +611,39 @@ class CartScreen extends StatelessWidget {
                                               children: [
                                                 Expanded(
                                                   flex: 1,
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Image.asset(
-                                                          'assets/images/cartremove.png'),
-                                                      sizedBoxWidth10,
-                                                      Text(
-                                                        'Remove',
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                                fontSize: 12.px,
-                                                                color: grey,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600),
-                                                      )
-                                                    ],
+                                                  child: GestureDetector(
+                                                    onTap: () async {
+                                                      await controller
+                                                          .deleteProduct(
+                                                              controller
+                                                                  .cartProducts!
+                                                                  .data!
+                                                                  .products![
+                                                                      index]
+                                                                  .product!
+                                                                  .id!);
+                                                    },
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Image.asset(
+                                                            'assets/images/cartremove.png'),
+                                                        sizedBoxWidth10,
+                                                        Text(
+                                                          'Remove',
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                                  fontSize:
+                                                                      12.px,
+                                                                  color: grey,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600),
+                                                        )
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                                 Expanded(

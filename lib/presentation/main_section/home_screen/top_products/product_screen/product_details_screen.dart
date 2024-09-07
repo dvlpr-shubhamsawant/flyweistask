@@ -1,6 +1,7 @@
 // import 'package:ecommerce_seller/models/products_data_model.dart';
 import 'package:ecommerce_seller/main.dart';
 import 'package:ecommerce_seller/presentation/main_section/home_screen/cart/cart_screen.dart';
+import 'package:ecommerce_seller/presentation/main_section/home_screen/top_products/controller/cart_controller.dart';
 import 'package:ecommerce_seller/presentation/main_section/home_screen/top_products/product_screen/widgets/productdetails_widget.dart';
 import 'package:ecommerce_seller/presentation/main_section/home_screen/top_products/rating_and_review_screen/rating_And_review_screen.dart';
 import 'package:ecommerce_seller/requests/cart_requests.dart';
@@ -581,6 +582,7 @@ class ProductDetailsScreen extends StatelessWidget {
               'quantity': 2
             };
             await cartRequests.addToCart(productData);
+            await CartController().fetchAllCartProducts();
             Get.to(() => CartScreen());
           }),
           Container(

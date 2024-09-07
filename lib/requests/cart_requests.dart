@@ -63,6 +63,7 @@ class CartRequests {
     try {
       Uri url = Uri.parse(Endpoints.baseUrl + Endpoints.updateCartItemQuantity);
       final body = jsonEncode(quantityData);
+      log(body);
 
       http.Response response = await http.put(
         url,
@@ -72,6 +73,7 @@ class CartRequests {
         },
         body: body,
       );
+      log(response.body);
       if (response.statusCode == 200) {
         QuantityUpdateDataModel.fromJson(jsonDecode(response.body));
       } else {
@@ -184,6 +186,7 @@ class CartRequests {
         },
         body: body,
       );
+      log(response.statusCode.toString());
       if (response.statusCode == 200) {
         log(response.body);
         return response.statusCode;
