@@ -1,3 +1,4 @@
+import 'package:ecommerce_seller/controllers/auth_controller.dart';
 import 'package:ecommerce_seller/presentation/on_boarding_section/create_account/create_account_screen2.dart';
 import 'package:ecommerce_seller/presentation/on_boarding_section/reset_password/update_password_screen.dart';
 import 'package:ecommerce_seller/presentation/widgets/button_widgets.dart';
@@ -10,8 +11,11 @@ import 'package:pinput/pinput.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class OtpScreen2 extends StatelessWidget {
-  OtpScreen2({super.key,});
+  OtpScreen2({
+    super.key,
+  });
 
+  TextEditingController otpField = TextEditingController();
 // final bool isReset;
   final focusNode = FocusNode();
 
@@ -63,7 +67,7 @@ class OtpScreen2 extends StatelessWidget {
                 SizedBox(
                   height: 3.h,
                 ),
-          
+
                 RichText(
                     text: TextSpan(children: [
                   TextSpan(
@@ -92,7 +96,7 @@ class OtpScreen2 extends StatelessWidget {
                 SizedBox(
                   height: Adaptive.h(5),
                 ),
-          
+
                 Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
@@ -105,7 +109,7 @@ class OtpScreen2 extends StatelessWidget {
                 SizedBox(
                   height: Adaptive.h(1),
                 ),
-          
+
                 Row(
                   children: [
                     Text(
@@ -116,15 +120,19 @@ class OtpScreen2 extends StatelessWidget {
                           color: const Color(0xff9E9E9E)),
                     ),
                     const Spacer(),
-                     Text(
-                      'Re-Send Code',
-                      style: GoogleFonts.poppins(
-                          fontSize: 14.px,
-                          fontWeight: FontWeight.w400,
-                          color: buttonColor,
-                          decoration: TextDecoration.underline,
-                          decorationColor: buttonColor
-                          ),
+                    GestureDetector(
+                      onTap: () {
+                        AuthController().resendOtp();
+                      },
+                      child: Text(
+                        'Re-Send Code',
+                        style: GoogleFonts.poppins(
+                            fontSize: 14.px,
+                            fontWeight: FontWeight.w400,
+                            color: buttonColor,
+                            decoration: TextDecoration.underline,
+                            decorationColor: buttonColor),
+                      ),
                     ),
                   ],
                 ),
@@ -132,23 +140,26 @@ class OtpScreen2 extends StatelessWidget {
                   height: Adaptive.h(6),
                 ),
                 InkWell(
-                    onTap: () {
-                      //  Get.to(()=>BottomNavigation());
-                     
-                        Get.to(()=>CreateAccountScreen2());
-                      
-                    },
-                    child: ButtonWidget(
-                        backgroundColor: buttonColor,
-                        title: 'Continue',
-                        textColor: Colors.white,
-                        heights: Adaptive.h(6),
-                        )),
+                  onTap: () async {
+                    //  Get.to(()=>BottomNavigation());
+
+                    Status status =
+                        await AuthController().verifyOtp(otpField.text);
+
+                    if (status == Status.success) {
+                      Get.to(() => CreateAccountScreen2());
+                    }
+                  },
+                  child: ButtonWidget(
+                    backgroundColor: buttonColor,
+                    title: 'Continue',
+                    textColor: Colors.white,
+                    heights: Adaptive.h(6),
+                  ),
+                ),
                 SizedBox(
                   height: Adaptive.h(3),
                 ),
-          
-               
               ],
             ),
           ),
@@ -164,7 +175,7 @@ class OtpScreen2 extends StatelessWidget {
       child: Pinput(
         length: 4,
 
-        // controller: pinController,
+        controller: otpField,
         focusNode: focusNode,
         androidSmsAutofillMethod: AndroidSmsAutofillMethod.smsUserConsentApi,
         listenForMultipleSmsOnAndroid: true,
@@ -176,9 +187,7 @@ class OtpScreen2 extends StatelessWidget {
         )),
 
         separatorBuilder: (index) => SizedBox(width: 13.w),
-        validator: (value) {
-          return value == '2222' ? null : 'Pin is incorrect';
-        },
+
         // onClipboardFound: (value) {
         //   debugPrint('onClipboardFound: $value');
         //   pinController.setText(value);
