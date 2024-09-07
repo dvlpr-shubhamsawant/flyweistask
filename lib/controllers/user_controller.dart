@@ -1,3 +1,5 @@
+import 'package:ecommerce_seller/controllers/address_controller.dart';
+import 'package:ecommerce_seller/main.dart';
 import 'package:ecommerce_seller/models/user_details_model.dart';
 import 'package:ecommerce_seller/requests/auth_requests.dart';
 import 'package:flutter/foundation.dart';
@@ -19,6 +21,7 @@ class AppUser extends ChangeNotifier {
   get email => userDetails!.data!.user!.email;
   get mobileNumber => userDetails!.data!.user!.mobileNumber;
   get wallet => userDetails!.data!.user!.wallet;
+  get profileImg => userDetails!.data!.user!.dummyImage?.first['img'];
 
   String? get token => _token;
   bool get isLogin => _token != null;
@@ -37,8 +40,9 @@ class AppUser extends ChangeNotifier {
     _uid = uid;
   }
 
-  init() {
-    fetchToken();
+  init() async {
+    await fetchToken();
+    AddresssController().getAddresses();
   }
 
   fetchToken() async {
@@ -48,6 +52,7 @@ class AppUser extends ChangeNotifier {
     box.close();
 
     if (token != null) {
+      logger.d(token);
       userDetails = await AuthApis().getUserProfile();
     }
   }

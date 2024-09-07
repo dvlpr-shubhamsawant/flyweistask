@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ecommerce_seller/models/login_user_api_response.dart';
 import 'package:ecommerce_seller/models/register_user_api_response.dart';
 import 'package:ecommerce_seller/requests/auth_requests.dart';
@@ -12,6 +14,8 @@ class AuthController extends ChangeNotifier {
     isLoading = value;
     notifyListeners();
   }
+
+  String email = "";
 
   AuthApis authApis = AuthApis();
 
@@ -37,5 +41,18 @@ class AuthController extends ChangeNotifier {
         name: name, email: email, password: password, mobile: mobile);
     loading = false;
     return response == null ? Status.failed : Status.success;
+  }
+
+  uploadImage(File file) {
+    authApis.uploadImage(file);
+  }
+
+  forgetPassword(email) {
+    authApis.forgetPassword(email);
+    email = email;
+  }
+
+  verifyForgetOtp(otp) {
+    authApis.verifyForgetPasswordOtp(otp, email);
   }
 }

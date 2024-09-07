@@ -1,6 +1,8 @@
-
+import 'package:ecommerce_seller/controllers/address_controller.dart';
 import 'package:ecommerce_seller/controllers/auth_controller.dart';
 import 'package:ecommerce_seller/controllers/user_controller.dart';
+import 'package:ecommerce_seller/presentation/main_section/home_screen/top_products/controller/cart_controller.dart';
+import 'package:ecommerce_seller/presentation/main_section/home_screen/top_products/controller/product_controller.dart';
 import 'package:ecommerce_seller/presentation/on_boarding_section/splash_screen/splash_screen.dart';
 import 'package:ecommerce_seller/services/local_notification.dart';
 import 'package:ecommerce_seller/utilz/colors.dart';
@@ -36,17 +38,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ResponsiveSizer(builder: (context, orientation, deviceType) {
       return MultiProvider(
-
         providers: [
           ChangeNotifierProvider(create: (_) => ProductController()),
           ChangeNotifierProvider(create: (_) => CartController()),
-        
-
-
-       ChangeNotifierProvider(create: (_) => AuthController())],
+          ChangeNotifierProvider(create: (_) => AuthController()),
+          ChangeNotifierProvider(create: (_) => AddresssController())
+        ],
         child: GetMaterialApp(
           navigatorKey: navigatorKey,
-
           title: 'Flutter Demo',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
-
+import 'dart:io';
+import 'package:path/path.dart';
 import 'package:ecommerce_seller/consts/endpoints.dart';
 import 'package:ecommerce_seller/controllers/auth_controller.dart';
 import 'package:ecommerce_seller/controllers/user_controller.dart';
@@ -157,6 +158,13 @@ class AuthApis {
     try {
       http.Response response =
           await http.post(url, headers: header, body: jsonEncode(body));
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        logger.d(data);
+
+        LocalNotificationService().showNotification(
+            id: 0, title: "", body: "Your OTP is ${data['data']['otp']}");
+      }
     } catch (e) {
       logger.e(e);
     }
@@ -180,6 +188,58 @@ class AuthApis {
       return UserDetailsModel.fromJson(jsonDecode(response.body));
     } catch (e) {
       logger.e(e);
+    }
+  }
+
+  verifyForgetPasswordOtp(otp, email) async {
+    Uri url = Uri.parse(
+        "https://sanjay-tiwari-backend.vercel.app/api/user/forgotVerifyotp");
+    var body = {"email": email, "otp": otp};
+    var header = {"Content-Type": "application/json"};
+
+    try {
+      http.Response response =
+          await http.post(url, headers: header, body: jsonEncode(body));
+      var data = jsonDecode(response.body);
+
+      logger.d(data);
+      displaySnackbar(message: data['message']);
+    } catch (e) {
+      logger.e(e);
+    }
+  }
+
+  Future<void> uploadImage(File imageFile) async {
+    var url = Uri.parse(
+        "https://sanjay-tiwari-backend.vercel.app/api/user/upload-id-picture");
+
+    // Create the request
+    var request = http.MultipartRequest('PUT', url);
+
+    // Add the bearer token in the headers
+    request.headers['Authorization'] = 'Bearer ${AppUser().token}';
+
+    // Add the image file as multipart form data
+    var stream = http.ByteStream(imageFile.openRead());
+    var length = await imageFile.length();
+
+    var multipartFile = http.MultipartFile(
+      'image', // key for form data
+      stream,
+      length,
+      filename: basename(imageFile.path),
+    );
+
+    request.files.add(multipartFile);
+
+    // Send the request
+    var response = await request.send();
+
+    // Check the response status
+    if (response.statusCode == 200) {
+      displaySnackbar(message: "Image Uploaded Successfully");
+    } else {
+      displaySnackbar(message: "Failed to upload image:");
     }
   }
 }

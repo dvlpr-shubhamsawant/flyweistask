@@ -96,7 +96,7 @@ class LoginScreenWithEmail extends StatelessWidget {
 
                 GestureDetector(
                   onTap: () {
-                    Get.to(() => const ResetPassword());
+                    Get.to(() => ResetPassword());
                   },
                   child: RichText(
                     text: TextSpan(

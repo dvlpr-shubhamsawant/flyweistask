@@ -1,9 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
-
 import 'package:ecommerce_seller/controllers/user_controller.dart';
 import 'package:ecommerce_seller/presentation/main_section/bottom_navigation/bottom_navigation_screen.dart';
 import 'package:ecommerce_seller/presentation/main_section/home_screen/home_screen.dart';
+import 'package:ecommerce_seller/presentation/main_section/home_screen/top_products/controller/cart_controller.dart';
 import 'package:ecommerce_seller/presentation/on_boarding_section/walk_through/walk_through.dart';
 import 'package:ecommerce_seller/requests/cart_requests.dart';
 import 'package:flutter/material.dart';
@@ -53,16 +53,12 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   loginScreen() async {
-
-    
-
-    Future.delayed(const Duration(seconds: 3), () {
-        await ProductController().fetchAllProducts();
+    Future.delayed(const Duration(seconds: 3), () async {
+      await ProductController().fetchAllProducts();
       CartController().fetchAllCartProducts();
       AppUser().isLogin
           ? Get.to(() => BottomNavigation())
           : Get.to(() => WalkThroughScreen());
-
     });
   }
 }

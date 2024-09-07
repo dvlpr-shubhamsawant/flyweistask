@@ -141,8 +141,14 @@ class OtpScreen extends StatelessWidget {
                 ),
                 InkWell(
                     onTap: () async {
-                      Status status =
-                          await AuthController().verifyOtp(pinController.text);
+                      Status status;
+                      if (isReset) {
+                        status = await AuthController()
+                            .verifyForgetOtp(pinController.text);
+                      } else {
+                        status = await AuthController()
+                            .verifyOtp(pinController.text);
+                      }
 
                       if (status == Status.success) {
                         if (isReset) {
