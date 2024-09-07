@@ -132,7 +132,7 @@ class WalkThroughScreen2 extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Get.to(() => const CreateAccountScreen());
+                      Get.to(() => CreateAccountScreen());
                     },
                     child: Container(
                       width: Adaptive.w(45),
