@@ -1,6 +1,8 @@
+import 'package:ecommerce_seller/controllers/auth_controller.dart';
 import 'package:ecommerce_seller/presentation/main_section/bottom_navigation/bottom_navigation_screen.dart';
 import 'package:ecommerce_seller/presentation/on_boarding_section/reset_password/update_password_screen.dart';
 import 'package:ecommerce_seller/presentation/widgets/button_widgets.dart';
+import 'package:ecommerce_seller/utility/snackbar.dart';
 import 'package:ecommerce_seller/utilz/colors.dart';
 import 'package:ecommerce_seller/utilz/sized_box.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +12,12 @@ import 'package:pinput/pinput.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class OtpScreen extends StatelessWidget {
-  OtpScreen({super.key,this.isReset=false});
+  OtpScreen({super.key, this.isReset = false});
 
-final bool isReset;
+  final bool isReset;
   final focusNode = FocusNode();
+
+  TextEditingController pinController = TextEditingController();
 
   final defaultPinTheme = PinTheme(
     width: 46,
@@ -63,7 +67,7 @@ final bool isReset;
                 SizedBox(
                   height: 3.h,
                 ),
-          
+
                 RichText(
                     text: TextSpan(children: [
                   TextSpan(
@@ -92,7 +96,7 @@ final bool isReset;
                 SizedBox(
                   height: Adaptive.h(5),
                 ),
-          
+
                 Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
@@ -105,7 +109,7 @@ final bool isReset;
                 SizedBox(
                   height: Adaptive.h(1),
                 ),
-          
+
                 Row(
                   children: [
                     Text(
@@ -116,15 +120,19 @@ final bool isReset;
                           color: const Color(0xff9E9E9E)),
                     ),
                     const Spacer(),
-                     Text(
-                      'Re-Send Code',
-                      style: GoogleFonts.poppins(
-                          fontSize: 14.px,
-                          fontWeight: FontWeight.w400,
-                          color: buttonColor,
-                          decoration: TextDecoration.underline,
-                          decorationColor: buttonColor
-                          ),
+                    GestureDetector(
+                      onTap: () {
+                        AuthController().resendOtp();
+                      },
+                      child: Text(
+                        'Re-Send Code',
+                        style: GoogleFonts.poppins(
+                            fontSize: 14.px,
+                            fontWeight: FontWeight.w400,
+                            color: buttonColor,
+                            decoration: TextDecoration.underline,
+                            decorationColor: buttonColor),
+                      ),
                     ),
                   ],
                 ),
@@ -132,26 +140,36 @@ final bool isReset;
                   height: Adaptive.h(6),
                 ),
                 InkWell(
-                    onTap: () {
-                      //  Get.to(()=>BottomNavigation());
+                    onTap: () async {
+                      Status status;
                       if (isReset) {
-                        Get.to(()=>UpdatePassword());
-                      }else{
-                                                Get.to(()=>BottomNavigation());
+                        status = await AuthController()
+                            .verifyForgetOtp(pinController.text);
+                      } else {
+                        status = await AuthController()
+                            .verifyOtp(pinController.text);
+                      }
 
+                      if (status == Status.success) {
+                        if (isReset) {
+                          Get.to(() => UpdatePassword());
+                        } else {
+                          Get.to(() => BottomNavigation());
+                        }
+                      } else {
+                        displaySnackbar(
+                            message: "Invalid Otp", color: Colors.redAccent);
                       }
                     },
                     child: ButtonWidget(
-                        backgroundColor: buttonColor,
-                        title: 'Login',
-                        textColor: Colors.white,
-                        heights: Adaptive.h(6),
-                        )),
+                      backgroundColor: buttonColor,
+                      title: 'Validate Otp',
+                      textColor: Colors.white,
+                      heights: Adaptive.h(6),
+                    )),
                 SizedBox(
                   height: Adaptive.h(3),
                 ),
-          
-               
               ],
             ),
           ),
@@ -167,7 +185,7 @@ final bool isReset;
       child: Pinput(
         length: 4,
 
-        // controller: pinController,
+        controller: pinController,
         focusNode: focusNode,
         androidSmsAutofillMethod: AndroidSmsAutofillMethod.smsUserConsentApi,
         listenForMultipleSmsOnAndroid: true,
@@ -179,9 +197,9 @@ final bool isReset;
         )),
 
         separatorBuilder: (index) => SizedBox(width: 13.w),
-        validator: (value) {
-          return value == '2222' ? null : 'Pin is incorrect';
-        },
+        // validator: (value) {
+        //   return value == '2222' ? null : 'Pin is incorrect';
+        // },
         // onClipboardFound: (value) {
         //   debugPrint('onClipboardFound: $value');
         //   pinController.setText(value);
