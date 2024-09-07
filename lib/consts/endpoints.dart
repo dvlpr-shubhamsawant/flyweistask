@@ -15,4 +15,16 @@ class Endpoints {
   static String uploadId = "api/user/upload-id-picture";
   static String addShopDetails = "api/user/update-documents";
   static String updateBankDetails = "api/user/updateBankDetails";
+
+  static String addToCart = "/api/user/cart/add";
+  static String getCart = "/api/user/cart/get";
+  static String updateCartItem = "/api/user/cart/update";
+  static String updateCartItemQuantity = "/api/user/cart/updateQuantity";
+  static String deleteAllCart = "/api/user/cart/delete";
+  static String deleteItemCart = "/api/user/cart/products";
+  static String applyCouponInCart = "/api/user/cart/apply-coupon";
+  static String deleteCouponInCart = "/api/user/cart/delete-apply-coupon";
+  static String getAllCoupons = "/api/user/coupon";
+
+  static String getAllProducts = "/api/user/products";
 }
